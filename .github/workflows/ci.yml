@@ -31,4 +31,11 @@ jobs:
       # Install like users do, but with this checkout as the tap.
       - run: brew tap marcoieni/tap "$PWD"
       - run: brew install --cask marcoieni/tap/bradipo
+      - name: Check that macOS won't block the app
+        run: |
+          codesign --verify --strict /Applications/bradipo.app
+          if xattr -lr /Applications/bradipo.app | grep com.apple.quarantine; then
+            echo "::error::The installed app is quarantined"
+            exit 1
+          fi
       - run: brew uninstall --cask --zap bradipo

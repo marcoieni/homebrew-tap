@@ -13,6 +13,12 @@ cask "bradipo" do
 
   app "bradipo.app"
 
+  # bradipo isn't notarized, so macOS would block each new version until users
+  # allow it in System Settings.
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/bradipo.app"]
+  end
+
   uninstall quit: "com.marcoieni.bradipo"
 
   zap trash: "~/Library/Preferences/com.marcoieni.bradipo.plist"
@@ -20,8 +26,7 @@ cask "bradipo" do
   caveats <<~EOS
     bradipo requires macOS 27.2.1 or later.
 
-    It isn't notarized by Apple, so macOS blocks each new version until you
-    allow it:
-      https://github.com/marcoieni/bradipo#allow-bradipo-to-open
+    It isn't notarized by Apple. This cask removes its quarantine, so macOS
+    opens it without Gatekeeper's check.
   EOS
 end
