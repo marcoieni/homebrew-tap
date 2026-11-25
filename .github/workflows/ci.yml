@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  # Pull requests cancel their superseded runs; each push to main gets its own group.
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  bradipo:
+    name: bradipo
+    # bradipo requires macOS 27, which GitHub hosts only on the Apple silicon
+    # xcode-27 image (a public preview, actions/runner-images#14404).
+    runs-on: xcode-27
+    timeout-minutes: 15
+    env:
+      # Use the image's Homebrew as it is, because updating it is slow.
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: brew style Casks/bradipo.rb
+      # Install like users do, but with this checkout as the tap.
+      - run: brew tap marcoieni/tap "$PWD"
+      - run: brew install --cask marcoieni/tap/bradipo
+      - run: brew uninstall --cask --zap bradipo
