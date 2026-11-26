@@ -1,6 +1,6 @@
 cask "bradipo" do
-  version "0.1.0"
-  sha256 "ac92caa08e15d8e2f746c5e503ac6a0a891ca90c636656d8da19770f35f379aa"
+  version "0.1.2"
+  sha256 "db7b12e93a7a75e54ba48891e3847d6ba997dddddbcc59be260bccf1c5bbcacd"
 
   url "https://github.com/marcoieni/bradipo/releases/download/v#{version}/bradipo-#{version}.dmg"
   name "bradipo"
